@@ -1,9 +1,0 @@
-# NECESSARY PARAMETERS
-wt_average_file = 'test/wt_ssrna_atp_1.avg.dat'
-wt_covar_inv_file = 'test/wt_ssrna_atp_1.inv_covar.dat'
-mut_average_file = 'test/mut_ssrna_atp_1.avg.dat'
-mut_res_num = 24
-res_min = 20
-res_max = 30
-
-
