@@ -99,12 +99,21 @@ print u.trajectory.n_frames
 for ts in u.trajectory:
 	# align frame to reference
 	align.alignto(u,ref,select=parameters['alignment'])
-	# compute average and covariance
+	# add to average
 	avg_pos += u_align.positions
+	# add to covar
+	covar += np.dot(u_align.positions,u_align.positions.T)
 
 # finalize average
 avg_pos /= float(u.trajectory.n_frames)
 
+# finalize covariance
+covar = covar/float(u.trajectory.n_frames) - np.dot(avg_pos,avg_pos.T)
+
 # print out averages
 np.savetxt(parameters['average_out'], avg_pos)
 
+# print out covariance
+np.savetxt(parameters['covar_out'],covar)
+
+# 
