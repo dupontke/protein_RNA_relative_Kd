@@ -94,7 +94,7 @@ ref_align = ref.select_atoms(parameters['alignment'])
 avg_pos = np.zeros((u_align.n_atoms,3),dtype=float)
 covar = np.zeros((u_align.n_atoms,u_align.n_atoms),dtype=float)
 
-print u.trajectory.n_frames
+print u.atoms.n_frames
 
 for ts in u.trajectory:
 	# align frame to reference
@@ -103,7 +103,7 @@ for ts in u.trajectory:
 	avg_pos += u_align.positions
 
 # finalize average
-avg_pos /= float(u.trajectory.n_frames)
+avg_pos /= float(u.atoms.n_frames)
 
 # print out averages
 np.savetxt(parameters['average_out'], avg_pos)
