@@ -67,21 +67,6 @@ config_parser(config_file)
 #start = int(parameters['start'])
 #end = int(parameters['end'])
 
-# ----------------------------------------
-# OUTLINE FOR CALCULATIONS:
-# 1. reference point for force calculations is the mutation site
-# 2. electrostatic force is F(i) is generated on atom(i) by the charges of all the atoms on the sidechain of the mutated residue.
-#        a. the force varies before and after the mutation dF(i) = F(i)wt - F(i)mut
-#     I. so in other words I need to calculate the electrostatic force for all atoms with the reference point at the mutated residue. I need to do this for the wt and the mutation in question. Then take the difference between the force for that atom atom pair -> aka covariance  
-
-# what ensemble are they averaging over for the covariance matrix??
-#---> the code up covariance via a dot product to get NxN instead of 3Nx3N. then calculate covariance. need to know for eq 5 is the inverted covariance and the arrary of average ca position for WT and mutant.
-## NxN covariance and inverted covariance and the average positions. all we need for the mutants are the average positions.
-# read in the inverted covariance of wt, average positiong for wt and mutants  
-
-
-
-
 
 # Initiate MD Analysis universe
 
@@ -117,6 +102,6 @@ np.savetxt(parameters['average_out'], avg_pos)
 np.savetxt(parameters['covar_out'],covar)
 
 # get inverse of covariance matrix
-covar_inv = np.linalg.inv(covar)
-np.savetxt(parameters['inv_covar_out'],covar_inv)
+inv_covar = np.linalg.inv(covar)
+np.savetxt(parameters['inv_covar_out'],inv_covar)
 

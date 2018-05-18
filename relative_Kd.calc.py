@@ -4,7 +4,7 @@
 # ----------------------------------------
 # USAGE:
 
-# ./compute_covar_avg.py config_file
+# ./relative_Kd.calc.py config_file
 
 # ----------------------------------------
 # PREAMBLE:

@@ -1,12 +1,12 @@
-
-top_file = test/truncated.prmtop
-traj_file = "test/production.99.dcd"
-ref_pdb_file = test/truncated.pdb
+# NECESSARY PARAMETERS
+top_file = 'test/wt_ssrna_atp_1/truncated.prmtop'
+traj_file = 'test/wt_ssrna_atp_1/production.99.dcd'
+ref_pdb_file = 'test/truncated.pdb'     # ref_pdb_file needs to be the same for all calculations; whether its WT or mutant. 
 start = 1
 end = -1
-average_out = test/avg.out 
-covar_out = test/covar.out
-inv_covar_out = test/inv_covar.out
+average_out = 'test/wt_ssrna_atp_1.avg.dat'
+covar_out = 'test/wt_ssrna_atp_1.covar.dat'
+inv_covar_out = 'test/wt_ssrna_atp_1.inv_covar.dat'
 
 
 
