@@ -116,4 +116,7 @@ np.savetxt(parameters['average_out'], avg_pos)
 # print out covariance
 np.savetxt(parameters['covar_out'],covar)
 
-# 
+# get inverse of covariance matrix
+covar_inv = np.linalg.inv(covar)
+np.savetxt(parameters['inv_covar_out'],covar_inv)
+
