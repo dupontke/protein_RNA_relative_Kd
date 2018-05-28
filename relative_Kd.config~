@@ -1,7 +1,7 @@
 # NECESSARY PARAMETERS
-wt_average_file = '100.100.wt_ssrna_atp_1.avg.dat'
-wt_covar_inv_file = '100.100.wt_ssrna_atp_1.inv_covar.dat'
-mut_average_file = '../../../../s411a_ssrna_atp/velocity.1/md/protein_RNA_relative_Kd/100.100.s411a_ssrna_atp_1.avg.dat'
+wt_average_file = '100.100.wt_ssrna_atp_1.resid_241to248.avg.dat'
+wt_covar_inv_file = '100.100.wt_ssrna_atp_1.resid_241to248.inv_covar.dat'
+mut_average_file = '../../../../s411a_ssrna_atp/velocity.1/md/protein_RNA_relative_Kd/100.100.s411a_ssrna_atp_1.resid_241to248.avg.dat'
 mut_res_num = 244     # the relative_Kd.calc.py script was corrected for the zero index used by python. therefore use the actual resid from simulation.
 res_min = 241         # The first residue within the range of interest within the protein.
 res_max = 248	      # The last residue within the range of interest within the protein. 
