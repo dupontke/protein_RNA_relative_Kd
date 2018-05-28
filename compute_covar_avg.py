@@ -29,8 +29,8 @@ flush = sys.stdout.flush
 
 config_file = sys.argv[1]
 
-necessary_parameters = ['top_file','traj_file', 'ref_pdb_file','start','end','average_out','covar_out','inv_covar_out']
-all_parameters = ['top_file','traj_file', 'ref_pdb_file','start','end','average_out','covar_out','inv_covar_out','alignment','covar_selection','write_summary','summary_filename']
+necessary_parameters = ['pdb_file','ref_pdb_file','traj_loc','start','end','alignment','covar_selection','average_out','covar_out','inv_covar_out']
+all_parameters = ['pdb_file','ref_pdb_file','traj_loc','start','end','alignment','covar_selection','average_out','covar_out','inv_covar_out','alignment','covar_selection','write_summary','summary_filename']
 
 
 # ----------------------------------------
@@ -45,8 +45,6 @@ def config_parser(config_file): # Function to take config file and create/fill t
                 parameters[necessary_parameters[i]] = ''
 
         # SETTING DEFAULT PARAMETERS FOR OPTIONAL PARAMETERS:
-        parameters['alignment'] = 'name CA'
-        parameters['covar_selection'] = 'name CA'
         parameters['write_summary'] = False
         parameters['summary_filename'] = 'compute_covar_avg.summary'
 
@@ -58,7 +56,7 @@ def config_parser(config_file): # Function to take config file and create/fill t
                         sys.exit()
 
 def summary():
-    with open('%s' %(parameters['summary_file']), 'w') as f:
+    with open('%s' %(parameters['summary_filename']),'w') as f:
         f.write('Using MDAnalysis version: %s\n' %(MDAnalysis.version.__version__))
         f.write('To recreate this analysis, run this line:\n')
         for i in range(len(sys.argv)):
@@ -78,16 +76,13 @@ def summary():
 parameters = {}
 config_parser(config_file)
 
-#start = int(parameters['start'])
-#end = int(parameters['end'])
-
 # ----------------------------------------
 # Initiate MD Analysis universe
-u = MDAnalysis.Universe(parameters['top_file'], parameters['traj_file'])
-u_align = u.select_atoms(parameters['alignment'])
-
 ref = MDAnalysis.Universe(parameters['ref_pdb_file'])
 ref_align = ref.select_atoms(parameters['alignment'])
+
+u = MDAnalysis.Universe(parameters['pdb_file'])
+u_align = u.select_atoms(parameters['alignment'])
 
 # ----------------------------------------
 # ARRAY DECLARATION
@@ -103,6 +98,7 @@ while start <= end:
     ffprint('Loading trajectory %s' %(start))
     u.load_new('%sproduction.%s/production.%s.dcd' %(parameters['traj_loc'],start,start))
     nSteps += len(u.trajectory)
+    print nSteps
     # Loop through trajectory
     for ts in u.trajectory:
         # align frame to reference
@@ -124,8 +120,6 @@ covar = covar/nSteps - np.dot(avg_pos,avg_pos.T)
 # get inverse of covariance matrix
 inv_covar = np.linalg.inv(covar)
 
-
-with open(parameters['average_out'],'w') as W, open(parameters['covar_out'],'w') as Y, open(parameters['inv_covar_out'],'w') as Z:
 
 
 # print out averages

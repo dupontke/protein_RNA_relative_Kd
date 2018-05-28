@@ -1,0 +1,21 @@
+Using MDAnalysis version: 0.15.0
+To recreate this analysis, run this line:
+./compute_covar_avg.pycompute_covar_avg.config
+
+Parameters used:
+top_file = test/wt_ssrna_atp_1/truncated.prmtop 
+traj_file = test/wt_ssrna_atp_1/production.1.dcd 
+pdb_file = test/truncated.pdb 
+ref_pdb_file = test/truncated.pdb 
+traj_loc = ../traj/Truncated/ 
+start = 1 
+end = 2 
+average_out = test/wt_ssrna_atp_1.avg.dat 
+covar_out = test/wt_ssrna_atp_1.covar.dat 
+inv_covar_out = test/wt_ssrna_atp_1.inv_covar.dat 
+alignment = name CA 
+covar_selection = name CA 
+write_summary = True 
+summary_filename = test/wt_ssrna_atp_1.compute_covar_avg.summary 
+
+
