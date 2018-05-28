@@ -30,7 +30,7 @@ flush = sys.stdout.flush
 config_file = sys.argv[1]
 
 necessary_parameters = ['top_file','traj_file', 'ref_pdb_file','start','end','average_out','covar_out','inv_covar_out']
-all_parameters = ['top_file','traj_file', 'ref_pdb_file','start','end','average_out','covar_out','inv_covar_out','alignment','covar_selection','write_summary','summary_filename']
+all_parameters = ['top_file','traj_file', 'ref_pdb_file','start','end','average_out','covar_out','inv_covar_out','alignment','covar_selection']
 
 
 # ----------------------------------------
@@ -47,8 +47,6 @@ def config_parser(config_file): # Function to take config file and create/fill t
         # SETTING DEFAULT PARAMETERS FOR OPTIONAL PARAMETERS:
         parameters['alignment'] = 'name CA'
         parameters['covar_selection'] = 'name CA'
-        parameters['write_summary'] = False
-        parameters['summary_filename'] = 'compute_covar_avg.summary'
 
         # GRABBING PARAMETER VALUES FROM THE CONFIG FILE:
         execfile(config_file,parameters)
@@ -81,7 +79,7 @@ config_parser(config_file)
 #start = int(parameters['start'])
 #end = int(parameters['end'])
 
-# ----------------------------------------
+
 # Initiate MD Analysis universe
 u = MDAnalysis.Universe(parameters['top_file'], parameters['traj_file'])
 u_align = u.select_atoms(parameters['alignment'])
@@ -89,54 +87,45 @@ u_align = u.select_atoms(parameters['alignment'])
 ref = MDAnalysis.Universe(parameters['ref_pdb_file'])
 ref_align = ref.select_atoms(parameters['alignment'])
 
-# ----------------------------------------
-# ARRAY DECLARATION
 avg_pos = np.zeros((u_align.n_atoms,3),dtype=float)
 covar = np.zeros((u_align.n_atoms,u_align.n_atoms),dtype=float)
 
-# ----------------------------------------
-# TRAJECTORY ANALYSIS
+print u.trajectory.n_frames
+
 nSteps = 0
 start = int(parameters['start'])
 end = int(parameters['end'])
-while start <= end:
-    ffprint('Loading trajectory %s' %(start))
-    u.load_new('%sproduction.%s/production.%s.dcd' %(parameters['traj_loc'],start,start))
-    nSteps += len(u.trajectory)
-    # Loop through trajectory
-    for ts in u.trajectory:
-        # align frame to reference
-        align.alignto(u,ref,select=parameters['alignment'])
-        # add to average
-        avg_pos += u_align.positions
-        # add to covar
-        covar += np.dot(u_align.positions,u_align.positions.T)
-    start += 1
-
-# finalize average
-avg_pos /= nSteps
-#avg_pos /= float(u.trajectory.n_frames)
-
-# finalize covariance
-covar = covar/nSteps - np.dot(avg_pos,avg_pos.T)
-#covar = covar/float(u.trajectory.n_frames) - np.dot(avg_pos,avg_pos.T)
-
-# get inverse of covariance matrix
-inv_covar = np.linalg.inv(covar)
-
-
 with open(parameters['average_out'],'w') as W, open(parameters['covar_out'],'w') as Y, open(parameters['inv_covar_out'],'w') as Z:
+    ffprint('Beginning trajectory analysis')
+    while start <= end:
+        ffprint('Loading trajectory %s' %(start))
+        u.load_new('%sproduction.%s/production.%s.dcd' %(parameters['traj_loc'],start,start))
+        nSteps += len(u.trajectory)
+        # Loop through trajectory
+        for ts in u.trajectory:
+            # align frame to reference
+            align.alignto(u,ref,select=parameters['alignment'])
+            # add to average
+            avg_pos += u_align.positions
+            # add to covar
+            covar += np.dot(u_align.positions,u_align.positions.T)
 
+        # finalize average
+        avg_pos /= float(u.trajectory.n_frames)
 
-# print out averages
-np.savetxt(parameters['average_out'], avg_pos)
+        # finalize covariance
+        covar = covar/float(u.trajectory.n_frames) - np.dot(avg_pos,avg_pos.T)
 
-# print out covariance
-np.savetxt(parameters['covar_out'],covar)
+        # print out averages
+        np.savetxt(parameters['average_out'], avg_pos)
 
-# print out inverse of covariance matrix
-np.savetxt(parameters['inv_covar_out'],inv_covar)
+        # print out covariance
+        np.savetxt(parameters['covar_out'],covar)
 
+        # get inverse of covariance matrix
+        inv_covar = np.linalg.inv(covar)
+        np.savetxt(parameters['inv_covar_out'],inv_covar)
+    start +=1
 
 if parameters['write_summary']:
     summary()
